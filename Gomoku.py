@@ -2,12 +2,10 @@
 from tkinter import *
 
 SIZE = 15 # 바둑판 크기 15 x 15 크기로하기위해서 
-CELL_SIZE = 40 #한칸 크기를 40픽셀로 일단냅두고 
-MARGIN = 40  #바깥여백 40픽셀
+CELL_SIZE = 50 #한칸 크기를 40픽셀로 일단냅두고 
+MARGIN = 50  #바깥여백 40픽셀
 
 count = 0 #바둑알개수
-
-
 canvas_size = MARGIN * 2 + CELL_SIZE * (SIZE -1)
 '''
 바둑판 전체 픽셀 크기 
@@ -25,13 +23,48 @@ canvas_size = MARGIN * 2 + CELL_SIZE * (SIZE -1)
 
 root = Tk() # 창생성하는거 먼저
 root.title("오목게임") #제목 
+root.geometry("600x600") #크기 
 
 
-background = Canvas(root, width = canvas_size, height=canvas_size,bg = "#DEB887")
+
+menu_frame = Frame(root) 
+menu_frame.pack() 
+
+
+def game_start():
+    menu_frame.pack_forget() #메뉴 숨기는거 의미 
+    game_frame.pack() # 게임화면 보여주는거의미 
+
+'''
+root 는 전체창 
+Frame(~) 는 ~안의 구역 나누기 => 메뉴화면과 게임화면을 나눔. 
+menu_frame = 처음 게임시작 시 메뉴들이 나오는 화면을 의미하며 
+game_frame = 일대일 or 1vs AI 와의 대결을 선택할시 화면이 나오도록의미 
+'''
+
+'''
+게임 시작 시 메뉴화면 세팅 
+'''
+title = Label(menu_frame,text="오목게임" , width=20,height=5)
+vs_people = Button(menu_frame,text="1. 1 vs 1", width = 20, height = 5, command=game_start) 
+vs_AI = Button(menu_frame,text = "2. 1 vs AI", width = 20 , height = 5, command=game_start)
+game_quit = Button(menu_frame, text = " 3. 그만두기 ", width= 20, height = 5)
+
+title.pack()
+vs_people.pack()
+vs_AI.pack()
+game_quit.pack()
+
+
+
+
+game_frame = Frame(root)
+
+background = Canvas(game_frame, width = canvas_size, height=canvas_size,bg = "#DEB887")
 background.pack()
+
 '''
 bg = ~ , 바둑판과 비슷한색 AI한테 추천받음 
-
 '''
 
 # 선긋기 (좌우) 15 x 15니까 총 15번반복하기 
@@ -101,13 +134,7 @@ def Insertion(event):
         )
     
     
-
-
-
 background.bind("<Button-1>",Insertion)
 #왼쪽 마우스 클릭시 바둑알넣는 작업 
-
-
-
 
 root.mainloop() #이거없으면 안된다. 

@@ -118,6 +118,12 @@ for i in range(15):
     y1 = canvas_size - MARGIN 
     background.create_line(x0,y0,x1,y1) 
 
+def update_turn():
+    if count % 2 == 0:
+        player_label.config(text="● 1P (Black) Turn", fg="black")
+    else: 
+        player_label.config(text="○ 2P (White) Turn", fg="gray")
+    move_count_label.config(text=f"Total : {count} move")
 
 #바둑알 넣기
 def Insertion(event):
@@ -164,11 +170,14 @@ def Insertion(event):
         draw_x + radius , draw_y + radius,
         fill="white" , outline="white"
         )
+    update_turn() #턴 보여주는거 함수호출
+
 #다시시작    
 def restart_game():
     global count 
     count = 0 #횟수 리셋 
     background.delete("all") #싹다지우기 
+    update_turn()
 
     # 다시 바둑판그리기 
     for i in range(15): 
@@ -194,16 +203,39 @@ def Back():
     game_frame.pack_forget() #게임화면 안보이고
     menu_frame.pack() #메뉴화면 보이게 
     
-right = Frame(main_frame,bg="#F5EEDC")
-right.pack(side="right",padx=20)
 
-player = Label(right,text="1P(흑돌) \n \n VS \n \n 2P(백돌)",font=("Arial",16,"bold"),bg="#F5EEDC",fg="#333333",justify="center")
+
+
+
+
+#우측 정보창
+right = Frame(main_frame,bg="#F5EEDC",padx=50)
+right.pack(side="right",fill="y")
+
+top = Frame(right, bg=BG_COLOR)
+top.pack(side="top", pady=20)
+
+center = LabelFrame(right, text="게임정보",bg=BG_COLOR,padx=40,pady=40,bd=3,relief="ridge",labelanchor="n")
+center.pack(expand=True,fill="both",padx=20,pady=20)
+
+bottom = Frame(right, bg=BG_COLOR)
+bottom.pack(side="bottom", pady=20)
+
+
+player = Label(top,text="👤 1P(흑돌) \n\n VS \n\n 👤 2P(백돌)",font=("Arial",16,"bold"),bg="#F5EEDC",fg="#333333",justify="center")
 player.pack(pady=20)
 
-restart = Button(right,text="다시 시작",command=restart_game, bg=BTN_COLOR,fg=BTN_FONT_COLOR,font=("Arial",15,"bold"))
+player_label = Label(center, text="● 1P (Black) Turn", font=("Arial", 22, "bold"), bg="#F5EEDC")
+player_label.pack()
+
+move_count_label = Label(center, text="Total Moves: 0", font=("Arial", 12), bg="#F5EEDC")
+move_count_label.pack()
+
+
+restart = Button(right,text="Reset",command=restart_game,width=15, bg=BTN_COLOR,fg=BTN_FONT_COLOR,font=("Arial",15,"bold"))
 restart.pack(pady=20)
 
-menu_return = Button(right,text="메뉴로 돌아가기",command=Back, bg=BTN_COLOR,fg=BTN_FONT_COLOR,font=("Arial",15,"bold"))
+menu_return = Button(right,text="QUIT",command=Back, width=15,bg=BTN_COLOR,fg=BTN_FONT_COLOR,font=("Arial",15,"bold"))
 menu_return.pack(pady=20)
 
 

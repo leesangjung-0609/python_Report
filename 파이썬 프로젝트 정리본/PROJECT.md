@@ -40,6 +40,46 @@
 
 ## 3. 핵심 로직 설명 (게임기능 등 )
 ### 3-1) 바둑판 세팅 및 바둑알 세팅 
+```
+#초기세팅
+SIZE = 15
+CELL_SIZE = 50
+MARGIN = 50
+
+canvas_size = MARGIN * 2 + CELL_SIZE * (SIZE - 1)
+```
+- 바둑판 크기를 15 X 15 로하기위해(SIZE)
+- 바둑판에서 한칸의 크기를 50픽셀로 세팅(CELL_SIZE)
+- 바깥여백을 50픽셀로 세팅 (MARGIN)
+#### 바둑판 전체 픽셀 크기 (canvas_size)
+1) MARGIN은 외부 요소와의 간격을 나타내는데 이코드에 넣은 이유는 바둑판이 창끝에 딱 붙은 채로 그림을 나오는걸 막기위해서이다.
+2) MARGIN * 2 : 너비(width)에서는 좌우 , 높이(height)에서는 상하. 양쪽의 여백을 모두 고려하면 * 2를 해야한다.
+3) 15 x 15 면 바둑알을 둘수있는 점은 15개이지만 , 그사이에 간격을 긋는 줄이 14개이며(SIZE - 1), 그 줄 하나의 크기가 CELL_SIZE이다.
+   즉 , 바둑판 자체 크기는 MARGIN * 2 + CELL_SIZE * (SIZE - 1) 이다.
+
+```
+# 바둑판 줄긋기 
+for i in range(15): 
+    #가로먼저 긋기 (바둑판에서 한칸크기씩 내려가면서 가로줄이 그려지는코드)
+    
+    x0 = MARGIN #가로줄긋기때문에 처음 x좌표는 안바뀜 
+    y0 = MARGIN + i * CELL_SIZE # 한칸크기씩 밑으로 내려가면서 그려짐 
+
+    x1 = canvas_size - MARGIN #전체크기에서 여백을 뺀위치가 줄이 끝나는위치 
+    y1 = y0 # 높이는 그대로 
+    background.create_line(x0,y0,x1,y1)
+    
+    #세로 먼저 긋기 (바둑판에서 한칸크기씩 오른쪽으로 이동하면서 세로줄이 그려지는코드)
+    x0 = MARGIN + i * CELL_SIZE 
+    y0 = MARGIN 
+    
+    x1 = x0 
+    y1 = canvas_size - MARGIN 
+    background.create_line(x0,y0,x1,y1) 
+
+```
+
+
 ### 3-2) 실시간 정보 세팅
 ### 3-3) 게임 승패 확정 조건 
 ### 3-4) 인공지능과의 대결 

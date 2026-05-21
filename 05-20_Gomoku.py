@@ -1,8 +1,7 @@
 # 파이썬 오목게임 관련 코드 작업
 from tkinter import *
 import random # 임시로 AI랜덤 돌 두기 구현 위해서 추가
-
-
+from tkinter import messagebox #무승부를 위해서 
 
 # ===================================
 # 1. 게임 초기 세팅 및 디자인 관련 상수 
@@ -241,6 +240,21 @@ def check_win(x, y, stone):
 
     return False
 
+#바둑판이 꽉찼는지 비어있는지확인하기위하여
+def check_draw():
+    for y in range(15):
+        for x in range(15):
+            if board[y][x] == 0:
+                return False 
+    return True 
+
+#문자뜨게 무승부
+def handle_draw():
+    player_label.config(text="무승부")
+    background.unbind("<Button-1>")
+    messagebox.showinfo("게임종료","무승부이므로 메인화면으로이동합니다.")
+    Back()
+
 
 def move_marker(draw_x, draw_y): 
     '''
@@ -335,6 +349,11 @@ def Insertion(event):
         background.unbind("<Button-1>")  # 클릭 막기
         return
     # ==============여기까지 5월 13일작업본2
+    
+    # [추가] 1vs1 모드 혹은 1vsAI 모드에서 사람이 마지막 돌을 두어 비겼을 때 체크
+    if check_draw():
+        root.after(100, handle_draw)
+        return
 
 
     update_turn() #턴 보여주는거 함수호출

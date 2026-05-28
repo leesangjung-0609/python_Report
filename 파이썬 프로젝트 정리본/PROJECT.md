@@ -113,7 +113,7 @@ for i in range(15):
 
 ```
 
-### 3-2) 실시간 정보 세팅
+### 3-2) 실시간 정보 세팅 
 
 
 
@@ -177,10 +177,118 @@ directions = [
      -
      -
      
+### 3-4) 바둑알 착수 
+```
+#바둑알 넣기 관련 함수
+
+def Insertion(event):
+    global count # 글로벌 변수 
+
+    x = event.x #마우스로 클릭한부분 좌표
+    y = event.y #마우스로 클릭한부분 좌표 
+    '''
+    background.create_oval(x-MARGIN/2,y-MARGIN/2,x+MARGIN/2,y+MARGIN/2,fill="black")
+    이거하면 교차점에 두는게 안됨. round사용하여 좌표 정수변환 + 가까운위치지정
+    '''
+
+    position_x = round((x-MARGIN)/CELL_SIZE)
+    position_y = round((y-MARGIN)/CELL_SIZE)
+    '''
+    1.MARGIN 뺴는거 : 기본 여백제거 
+    2.CELL_SIZE로 나누는이유 
+    : x 좌표나올시 164대충이런식 칸크기(CELL_SIZE)로 나눠야 몇번째칸인지 확인가능
+    3. round : 가장가까운점이동 
+
+    '''
+    if position_x < 0 or position_x > 14 or position_y < 0 or position_y > 14:
+        return #바둑판을 벗어난 곳에 착수되는 것 방지
+    if board[position_y][position_x] != 0:
+        return # 이미 돌이 놓여있는데 또 착수되는 것을 방지
+        
+    draw_x = position_x * CELL_SIZE + MARGIN
+    draw_y = position_y * CELL_SIZE + MARGIN 
+    '''
+    - position_x,y는 몇번째 칸인지만 확인해주기만함 
+    - 따라서 그리기시작할위치계산은 칸크기를 곱하고 여백을더해야함
+    '''
+    radius = CELL_SIZE // 2 - 5 
+    
+    count += 1
+    #바둑알 개수 카운팅 
+    #나중에 흑 백 순서대로 나오게 만들려고 
+    
+    if(count % 2 == 1) :
+        board[position_y][position_x] = 1
+        stone = background.create_oval(
+        draw_x - radius , draw_y - radius,
+        draw_x + radius , draw_y + radius,
+        fill="black" ,outline="black"
+        )
+        last_move_label.config(text=f"Last Move: 흑돌 ({position_x + 1}, {position_y + 1})")
+    else :
+        board[position_y][position_x] = 2
+        stone = background.create_oval(
+        draw_x - radius , draw_y - radius,
+        draw_x + radius , draw_y + radius,
+        fill="white" , outline="white"
+        )
+        last_move_label.config(text=f"Last Move: 백돌 ({position_x + 1}, {position_y + 1})")
+   
+   
+    history.append((stone, position_x, position_y)) # 둔 돌 색, 좌표 저장
+    move_marker(draw_x, draw_y)
+    
+    # ==============5월13일작업본 2
+    # 승리 체크
+    if check_win(position_x, position_y, board[position_y][position_x]):
+        
+        if board[position_y][position_x] == 1:
+            player_label.config(text="🎉 흑돌 승리!")
+        else:
+            player_label.config(text="🎉 백돌 승리!")
+
+        background.unbind("<Button-1>")  # 클릭 막기
+        return
+    # ==============여기까지 5월 13일작업본2
+    
+    # [추가] 1vs1 모드 혹은 1vsAI 모드에서 사람이 마지막 돌을 두어 비겼을 때 체크
+    if check_draw():
+        root.after(100, handle_draw)
+        return
+
+
+    update_turn() #턴 보여주는거 함수호출
+
+    #만약 AI대전이라면 ai 불러오기
+    if game_mode == "AI" and count % 2 == 1:
+        root.after(500, ai_move)
+
+.
+.
+.
+.
+.
+.
 
 
 
-### 3-4) 인공지능과의 대결 
+background.bind("<Button-1>",Insertion) #왼쪽마우스 클릭시 바둑알 넣는작업 
+```
+#### 1. background.bind("<Button-1>",Insertion)
+- "<Button-1>" : Tkinter에서는 마우스 왼쪽버튼을 클릭하는 문자열이 Button-1 (+ Button-2는 마우스 휠클릭 , Button-3는 마우스 오른쪽 버튼클릭 )
+- 이벤트 바인딩(.bind) : background(바둑판)위에서 마우스 왼쪽버튼을 누르는 이벤트("Button-1")가 발생할시에 , Insertion함수를 실행하라는의미 
+- 콜백 함수 (Callback Function) : 특정 조건(이벤트)이 충족 되었을때 시스템(Tkinter)에 의해 나중에 역으로 호출되는 함수이다.  
+#### 2. def Inertion(event) :
+-  background.bin 를 통해 함수 호출시 마우스 클릭한 위치에 관련된 정보를 event객체에 담아서 전달한다. (x,y 좌표 전부다.)
+
+#### 3.
+
+
+#### 4. 
+
+#### 5.
+
+
 
 
 
